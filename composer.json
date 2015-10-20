@@ -1,0 +1,25 @@
+{
+  "name": "mantesko/priceparser",
+  "type": "yii2-extension",
+  "keywords": ["yii2", "import", "excel", "csv", "json", "yml"],
+  "description": "Extension for import information from valid price file (excel, csv, json, xml)",
+
+  "authors": [
+    {
+      "name": "Alexandr Klimenko"
+    }
+  ],
+
+  "require": {
+    "php": ">=5.4.0",
+    "phpoffice/phpexcel": "dev-develop"
+  },
+
+  "autoload": {
+    "psr-4": {
+      "mantesko\\priceparser\\": ""
+    }
+  }
+
+
+}
