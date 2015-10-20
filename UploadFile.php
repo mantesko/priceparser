@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models;
+namespace mantesko\priceparser;
 
 use Yii;
 use yii\base\Model;

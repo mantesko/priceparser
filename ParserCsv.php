@@ -6,7 +6,7 @@
  * Time: 12:16
  */
 
-namespace app\models;
+namespace mantesko\priceparser;
 
 
 use yii\base\Model;
