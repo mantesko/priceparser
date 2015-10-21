@@ -64,10 +64,11 @@ class SavePrice extends Model
         if($model->parserModel){
             $priceArray = $model->parserModel->Run()->getResponse();
             if(!empty($priceArray)){
+                $model->createTables();
                 $userId = Yii::$app->user->getId();
                 Yii::$app->db->createCommand('DELETE FROM last_import WHERE user_id = :userId')
-                ->bindValue(':userId', $userId)
-                ->execute();
+                    ->bindValue(':userId', $userId)
+                    ->execute();
                 foreach($priceArray as $k => $priceItem){
                     if(isset($priceItem['picture'])){
                         $picture = $priceItem['picture'];
@@ -138,6 +139,74 @@ class SavePrice extends Model
         return $image;
     }
 
+    private function createTables()
+    {
+        Yii::$app->db->createCommand('CREATE TABLE IF NOT EXISTS price(
+  id INT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  user_id INT(10) NOT NULL,
+  offer_id INT(20) NOT NULL,
+  type VARCHAR(128) NOT NULL,
+  available TINYINT(1) DEFAULT NULL,
+  bid VARCHAR(10) NOT NULL,
+  url VARCHAR(999) ,
+  price DECIMAL(8,2) NOT NULL ,
+  oldprice DECIMAL(8,2) ,
+  currency_id VARCHAR(10) NOT NULL ,
+  category_id INT(10) NOT NULL ,
+  picture VARCHAR(300) ,
+  store TINYINT(1) DEFAULT NULL,
+  pickup TINYINT(1) DEFAULT NULL,
+  delivery TINYINT(1) DEFAULT NULL,
+  local_delivery_cost DECIMAL(8,2) DEFAULT NULL ,
+  author VARCHAR(300) ,
+  name VARCHAR(300) NOT NULL ,
+  publisher VARCHAR(128) ,
+  series VARCHAR(300) ,
+  year YEAR ,
+  isbn VARCHAR(30) NOT NULL ,
+  volume INT(5),
+  part INT(5) ,
+  language VARCHAR(20) ,
+  binding VARCHAR(20) ,
+  page_extent INT(5) ,
+  description VARCHAR(999) ,
+  downloadable TINYINT(1) DEFAULT NULL,
+  age INT(3))')
+            ->execute();
+        Yii::$app->db->createCommand('CREATE TABLE IF NOT EXISTS last_import(
+  id INT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  user_id INT(10) NOT NULL,
+  offer_id INT(20) NOT NULL,
+  type VARCHAR(128) NOT NULL,
+  available TINYINT(1) DEFAULT NULL,
+  bid VARCHAR(10) NOT NULL,
+  url VARCHAR(999) ,
+  price DECIMAL(8,2) NOT NULL ,
+  oldprice DECIMAL(8,2) ,
+  currency_id VARCHAR(10) NOT NULL ,
+  category_id INT(10) NOT NULL ,
+  picture VARCHAR(300) ,
+  store TINYINT(1) DEFAULT NULL,
+  pickup TINYINT(1) DEFAULT NULL,
+  delivery TINYINT(1) DEFAULT NULL,
+  local_delivery_cost DECIMAL(8,2) DEFAULT NULL ,
+  author VARCHAR(300) ,
+  name VARCHAR(300) NOT NULL ,
+  publisher VARCHAR(128) ,
+  series VARCHAR(300) ,
+  year YEAR ,
+  isbn VARCHAR(30) NOT NULL ,
+  volume INT(5),
+  part INT(5) ,
+  language VARCHAR(20) ,
+  binding VARCHAR(20) ,
+  page_extent INT(5) ,
+  description VARCHAR(999) ,
+  downloadable TINYINT(1) DEFAULT NULL,
+  age INT(3))')
+            ->execute();
+    }
+
     private function savePriceItem($item)
     {
         $userId = Yii::$app->user->getId();
@@ -159,14 +228,14 @@ class SavePrice extends Model
             }
         }
         $params = [':userId'=>$userId, ':offerId'=>$itemId, ':type'=>$item['type'], ':available'=>$item['available'],
-                    ':bid'=>$item['bid'], ':url'=>$item['url'], ':price'=>$item['price'], ':oldPrice'=>$item['oldprice'],
-                    ':currencyId'=>$item['currencyId'], ':categoryId'=>$item['categoryId'], ':picture'=>$item['picture'],
-                    ':store'=>$item['store'], ':pickup'=>$item['pickup'], ':delivery'=>$item['delivery'],
-                    ':localDeliveryCost'=>$item['local_delivery_cost'], ':author'=>$item['author'], ':name'=>$item['name'],
-                    ':publisher'=>$item['publisher'], ':series'=>$item['series'], ':year'=>$item['year'],
-                    ':isbn'=>$item['ISBN'], ':volume'=>$item['volume'], ':part'=>$item['part'], ':language'=>$item['language'],
-                    ':binding'=>$item['binding'], ':pageExtent'=>$item['page_extent'], ':description'=>$item['description'],
-                    ':downloadable'=>$item['downloadable'], ':age'=>$item['age']];
+            ':bid'=>$item['bid'], ':url'=>$item['url'], ':price'=>$item['price'], ':oldPrice'=>$item['oldprice'],
+            ':currencyId'=>$item['currencyId'], ':categoryId'=>$item['categoryId'], ':picture'=>$item['picture'],
+            ':store'=>$item['store'], ':pickup'=>$item['pickup'], ':delivery'=>$item['delivery'],
+            ':localDeliveryCost'=>$item['local_delivery_cost'], ':author'=>$item['author'], ':name'=>$item['name'],
+            ':publisher'=>$item['publisher'], ':series'=>$item['series'], ':year'=>$item['year'],
+            ':isbn'=>$item['ISBN'], ':volume'=>$item['volume'], ':part'=>$item['part'], ':language'=>$item['language'],
+            ':binding'=>$item['binding'], ':pageExtent'=>$item['page_extent'], ':description'=>$item['description'],
+            ':downloadable'=>$item['downloadable'], ':age'=>$item['age']];
         $isPriceItem = Yii::$app->db->createCommand('SELECT * FROM price WHERE user_id = :userId AND offer_id = :offerId')
             ->bindValue(':userId', $userId)
             ->bindValue(':offerId', $itemId)
