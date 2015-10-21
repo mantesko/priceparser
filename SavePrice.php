@@ -87,6 +87,9 @@ class SavePrice extends Model
     private function saveFile()
     {
         $dir = Yii::getAlias('@app/uploads');
+        if(!file_exists($dir)){
+            mkdir($dir);
+        }
         $this->filePath = false;
 
         if($file = UploadedFile::getInstanceByName('file')){
@@ -111,6 +114,9 @@ class SavePrice extends Model
     private function uploadImage($path)
     {
         $dir = Yii::getAlias('@app/images');
+        if(!file_exists($dir)){
+            mkdir($dir);
+        }
         if($fp = @fopen($path, 'r')){
             if($imageInfo = @getimagesize($path)){
                 switch ($imageInfo['mime']){
